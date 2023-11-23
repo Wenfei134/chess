@@ -17,7 +17,7 @@ ROOT_PATH=/Users/whe/Desktop/Current-Courses/workshop/cs246-chess-main/
 # LIBRARY_PATHS = -LC:\msys64\mingw_dev_lib\x86_64-w64-mingw32\lib -LC:\msys64\mingw_dev_lib\x86_64-w64-mingw32-image\lib
 
 ####################### MACOS #####################################
-# # LINKER_FLAGS specifies the libraries we're linking against
+# LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -framework SDL2 -framework SDL2_image
 # INCLUDE_PATHS specifies the additional include paths we'll need
 INCLUDE_PATHS=-I${ROOT_PATH}chess/SDL2.framework/Headers/ -I${ROOT_PATH}chess/SDL2_image.framework/Headers/
