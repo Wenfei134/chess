@@ -1,0 +1,12 @@
+#ifndef ROOK_H
+#define ROOK_H
+#include "piece.h"
+
+class Rook : public Piece
+{
+public:
+  Rook(PieceColour color, PieceType name);
+  vector<Move> listPseudoLegalMoves(Board &board) override;
+};
+
+#endif
