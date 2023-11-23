@@ -26,12 +26,12 @@ LIBRARY_PATHS=-L${ROOT_PATH}chess/SDL2.framework/Versions/A/ -L${ROOT_PATH}chess
 # FRAMEWORK_PATHS specifies the frameworks
 FRAMEWORK_PATHS=-F${ROOT_PATH}chess/
 
-%.o: %.cpp ${SOURCES}
-	${CXX} -c -o $@ $< ${CXXFLAGS} ${INCLUDE_PATHS}
-
 all: ${OBJECTS}
 	${CXX} ${OBJECTS} ${CXXFLAGS} ${INCLUDE_PATHS} ${LIBRARY_PATHS} ${FRAMEWORK_PATHS} -o ${EXEC} ${LINKER_FLAGS}
 -include ${DEPENDS}
+
+%.o: %.cpp ${SOURCES}
+	${CXX} -c -o $@ $< ${CXXFLAGS} ${INCLUDE_PATHS}
 
 .PHONY: clean
 
