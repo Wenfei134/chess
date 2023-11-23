@@ -72,7 +72,7 @@ bool ChessTexture::LoadTextureFromFile(std::string path) {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void ChessTexture::Render(int x, int y, SDL_Rect* sourceSizeRect = nullptr) {
+void ChessTexture::Render(int x, int y, SDL_Rect* sourceSizeRect) {
     // Create the render rectangle window - (x,y) coords and then (width,height) dimensions
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
 

@@ -1,4 +1,5 @@
 #include "piece.h"
+#include "../square.h"
 #include "../board.h"
 
 Piece::Piece(PieceColour colour, PieceType name) : colour{colour}, name{name}, position{nullptr} {}
@@ -38,7 +39,7 @@ PieceType Piece::getType()
   return name;
 }
 
-bool Piece::isBlockedByPiece(Board &b, Move &mv)
+bool Piece::isBlockedByPiece(Move &mv)
 {
   if (mv.end->isEmpty())
   {

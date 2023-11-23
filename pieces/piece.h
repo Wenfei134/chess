@@ -6,9 +6,9 @@
 #include <memory>
 #include <vector>
 #include "../move.h"
-#include "../square.h"
 
 class Board;
+class Square;
 
 using std::shared_ptr;
 using std::string;
@@ -48,7 +48,7 @@ public:
   bool getHasMoved();
   void setHasMoved(bool has_moved);
   bool isDead();
-  virtual bool isBlockedByPiece(Board &board, Move &mv);
+  virtual bool isBlockedByPiece(Move &mv);
   virtual vector<Move> listPseudoLegalMoves(Board &board) = 0;
   virtual ~Piece() = default;
 };

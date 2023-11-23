@@ -2,7 +2,7 @@
 #include "Graphics/ChessGraphicsSystem.hpp"
 #include <iostream>
 
-int main()
+int main(int argv, char** args)
 {
   ChessGraphicsSystem *gSys = nullptr;
   try {

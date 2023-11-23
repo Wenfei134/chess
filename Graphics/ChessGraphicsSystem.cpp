@@ -1,12 +1,22 @@
 #include "ChessGraphicsSystem.hpp"
 #include "CommonGraphicsConstants.hpp"
 #include "../board.h"
+#include <SDL_image.h>
+
+const int SCREEN_WIDTH = 504;
+const int SCREEN_HEIGHT = 504;
+
+const int OFFSET_FROM_EDGE_OF_BOARD = 25;
+const int CHESS_TILE_SIZE = 56;
+
+const char *CHESS_PIECES_FILEPATH = "img/pieces.png";
+const char *CHESS_BOARD_FILEPATH = "img/board.png";
 
 // --------------------------------------------------------------------------------------------------------------------
-ChessGraphicsSystem::ChessGraphicsSystem() {
+ChessGraphicsSystem::ChessGraphicsSystem(): mChessPiecesSpriteSheetTexture{ChessTexture(mRenderer)}, mChessBoardTexture{ChessTexture(mRenderer)} {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		throw ("SDL could not initialize! SDL Error: " + SDL_GetError() + "\n");
+		throw ("SDL could not initialize! SDL Error: " + std::string(SDL_GetError()) + "\n");
 	}
 
     // Set texture filtering to linear
@@ -24,22 +34,22 @@ ChessGraphicsSystem::ChessGraphicsSystem() {
         SDL_WINDOW_SHOWN
     );
     if(!mWindow) {
-        throw ("Window could not be created! SDL Error: " +  SDL_GetError() + "\n");
+        throw ("Window could not be created! SDL Error: " +  std::string(SDL_GetError()) + "\n");
     }
 
     //Create renderer for window
-    mRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+    mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
     if(!mRenderer) {
-        throw ("Renderer could not be created! SDL Error:" + SDL_GetError() + "\n");
+        throw ("Renderer could not be created! SDL Error:" + std::string(SDL_GetError()) + "\n");
     }
 
     //Initialize renderer color
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
     //Initialize PNG loading
     int imgFlags = IMG_INIT_PNG;
     if(!(IMG_Init(imgFlags) & imgFlags)) {
-        throw ("SDL_image could not initialize! SDL_image Error:" + IMG_GetError() + "\n");
+        throw ("SDL_image could not initialize! SDL_image Error:" + std::string(IMG_GetError()) + "\n");
     }
 
     LoadAllMedia();
@@ -60,7 +70,10 @@ ChessGraphicsSystem::~ChessGraphicsSystem() {
 
 // --------------------------------------------------------------------------------------------------------------------
 SDL_Point ChessGraphicsSystem::ConvertGridCoordinatesToSDLCoordinates(int x, int y) {
-	return SDL_Point(OFFSET_FROM_EDGE_OF_BOARD + x*CHESS_TILE_SIZE, OFFSET_FROM_EDGE_OF_BOARD + y*CHESS_TILE_SIZE);
+	auto p = SDL_Point();
+    p.x = OFFSET_FROM_EDGE_OF_BOARD + x*CHESS_TILE_SIZE;
+    p.y = OFFSET_FROM_EDGE_OF_BOARD + y*CHESS_TILE_SIZE;
+    return p;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -104,10 +117,10 @@ void ChessGraphicsSystem::LoadAllMedia() {
 	}
 
     for (int i = 0; i < 12; i++) {
-        mChessPiecesTexturesBoundingRects[i].x = (i % 6) * TILE_SIZE;
-        mChessPiecesTexturesBoundingRects[i].y = (i < 6) ? 0 : TILE_SIZE;
-        mChessPiecesTexturesBoundingRects[i].w = TILE_SIZE;
-        mChessPiecesTexturesBoundingRects[i].h = TILE_SIZE;
+        mChessPiecesTexturesBoundingRects[i].x = (i % 6) * CHESS_TILE_SIZE;
+        mChessPiecesTexturesBoundingRects[i].y = (i < 6) ? 0 : CHESS_TILE_SIZE;
+        mChessPiecesTexturesBoundingRects[i].w = CHESS_TILE_SIZE;
+        mChessPiecesTexturesBoundingRects[i].h = CHESS_TILE_SIZE;
     }
 
 	// Load board texture
@@ -137,10 +150,10 @@ void ChessGraphicsSystem::RenderBoardState(Board *board) {
         for (int j = 0; j < 8; j++) {
             Square *currSquare = board->getSquare(i, j);
             if (!currSquare->isEmpty()) {
-                Piece *currPiece = currSquare->getPiece();
+                auto currPiece = currSquare->getPiece();
                 mChessPiecesSpriteSheetTexture.Render(
-                    OFFSET_FROM_EDGE_OF_BOARD + i * TILE_SIZE,
-                    OFFSET_FROM_EDGE_OF_BOARD + j * TILE_SIZE,
+                    OFFSET_FROM_EDGE_OF_BOARD + i * CHESS_TILE_SIZE,
+                    OFFSET_FROM_EDGE_OF_BOARD + j * CHESS_TILE_SIZE,
                     &mChessPiecesTexturesBoundingRects[
                         GetChessFigureTextureBoundingRectIndex(
                             currPiece->getColour(),
@@ -172,8 +185,6 @@ void ChessGraphicsSystem::RunChessGame(Board *board) {
                 quit = true;
             }
         }
-
-        Render();
     }
 }
 

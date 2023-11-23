@@ -1,7 +1,8 @@
 #include "ClickableButton.hpp"
+#include "../move.h"
 
 // --------------------------------------------------------------------------------------------------------------------
-ClickableButton::ClickableButton() : mPosition({0,0}), mCurrentTexture(BUTTON_SPRITE_MOUSE_OUT) {}
+ClickableButton::ClickableButton() : mPosition({0,0}), mCurrentTexture(LButtonSprite::BUTTON_SPRITE_MOUSE_OUT) {}
 
 // --------------------------------------------------------------------------------------------------------------------
 SDL_Point ClickableButton::GetPosition() {
@@ -14,7 +15,9 @@ void ClickableButton::HandleEvent(SDL_Event* e) {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void ClickableButton::Render(std::vector<Move> legalMoves)
+void ClickableButton::Render(std::vector<Move> legalMoves){
+
+}
 
 
 // --------------------------------------------------------------------------------------------------------------------

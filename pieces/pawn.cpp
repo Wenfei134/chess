@@ -31,7 +31,7 @@ vector<Move> Pawn::listPseudoLegalMoves(Board &board)
         continue;
       }
       Move mv = Move(board.getSquare(row, col), board.getSquare(nextRow, col), board);
-      if (!isBlockedByPiece(board, mv)) // not blocked by a piece
+      if (!isBlockedByPiece(mv)) // not blocked by a piece
       {
         pseudo_legal_moves.push_back(mv);
       }
@@ -55,7 +55,7 @@ vector<Move> Pawn::listPseudoLegalMoves(Board &board)
       continue;
     }
     Move mv = Move(board.getSquare(row, col), board.getSquare(nextRow, nextCol), board);
-    if (isBlockedByPiece(board, mv)) // there is a piece to take
+    if (isBlockedByPiece(mv)) // there is a piece to take
     {
       pseudo_legal_moves.push_back(mv);
     }
