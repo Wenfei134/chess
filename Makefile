@@ -3,7 +3,7 @@ CXXFLAGS = -g -std=c++14 -Wall -Werror=vla -MMD
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 EXEC = chess
-SOURCES = $(wildcard Graphics/*.cpp) $(wildcard pieces/*.cpp) $(wildcard *.cpp) 
+SOURCES = $(shell find . -wholename '**/*.cpp')
 OBJECTS = ${SOURCES:.cpp=.o}
 DEPENDS = ${OBJECTS:.o=.d}
 
