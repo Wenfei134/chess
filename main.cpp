@@ -1,11 +1,19 @@
 #include "chesscontroller.h"
+#include "Graphics/ChessGraphicsSystem.hpp"
 #include <iostream>
 
 int main()
 {
-  ChessControler c = ChessControler();
+  ChessGraphicsSystem *gSys = nullptr;
+  try {
+      gSys = new ChessGraphicsSystem();
+  } catch (const char *errMsg) {
+      printf(errMsg);
+      return -1;
+  }
+
+  ChessGame *game = new ChessGame(); 
+
+  ChessController c = ChessController(gSys, game);
   c.start();
-  // c.print();
-  c.handleClick(6, 3);
-  c.handleClick(4, 3);
 }

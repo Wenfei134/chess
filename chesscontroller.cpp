@@ -1,24 +1,27 @@
 #include "chesscontroller.h"
 #include "move.h"
 #include "chessgame.h"
+#include "Graphics/ChessGraphicsSystem.hpp"
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <utility>
 
-void ChessControler::handleClick(int row, int col)
+ChessController::ChessController(ChessGraphicsSystem * gSys, ChessGame * game) : gSys(gSys), game(game) {} 
+
+void ChessController::handleClick(int row, int col)
 {
   // before game starts
-  if (game.getState() != game.ACTIVE && prev_row != -1)
+  if (game->getState() != game->ACTIVE && prev_row != -1)
   {
-    // game.reset();
+    game->reset();
   }
   // in game
-  if (game.getState() == game.ACTIVE)
+  if (game->getState() == game->ACTIVE)
   {
     if (!hasValidMoves)
     {
-      validMoves = game.getLegalMoves();
+      validMoves = game->getLegalMoves();
       hasValidMoves = true;
     }
     if (prev_row == -1)
@@ -49,8 +52,8 @@ void ChessControler::handleClick(int row, int col)
           std::cout << "made move" << std::endl;
           std::cout << "start pos " << prev_row << " " << prev_col << std::endl;
           std::cout << "end pos " << row << " " << col << std::endl;
-          game.takeTurn(mv);
-          validMoves = game.getLegalMoves();
+          game->takeTurn(mv);
+          validMoves = game->getLegalMoves();
           // render
           return;
         }
@@ -61,19 +64,19 @@ void ChessControler::handleClick(int row, int col)
       return;
     }
   }
-  if (game.getState() == game.WHITE_WIN)
+  if (game->getState() == game->WHITE_WIN)
   {
     prev_row = row;
     prev_col = col;
     // render
   }
-  else if (game.getState() == game.BLACK_WIN)
+  else if (game->getState() == game->BLACK_WIN)
   {
     prev_row = row;
     prev_col = col;
     // render
   }
-  else if (game.getState() == game.STALEMATE)
+  else if (game->getState() == game->STALEMATE)
   {
     prev_row = row;
     prev_col = col;
@@ -81,7 +84,7 @@ void ChessControler::handleClick(int row, int col)
   }
 }
 
-void ChessControler::start()
+void ChessController::start()
 {
   enum
   {
@@ -89,10 +92,11 @@ void ChessControler::start()
     BLACK
   };
   // before game begins
-  game = ChessGame();
-  game.reset();
-  validMoves = game.getLegalMoves();
+  game->reset();
+  validMoves = game->getLegalMoves();
   hasValidMoves = true;
   prev_row = -1;
   prev_col = -1;
+
+  gSys->RunChessGame(game->GetBoard());
 }

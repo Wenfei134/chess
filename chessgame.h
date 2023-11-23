@@ -12,8 +12,6 @@ using std::vector;
 
 class ChessGame
 {
-  static const int NUM_PLAYERS = 2;
-  static const int NUM_PLAYER_TYPES = 5;
   Board board;
   int state;
   PieceColour player_in_turn;
@@ -33,10 +31,8 @@ public:
   void takeTurn(Move mv);
   void setup();
   vector<vector<vector<Move>>> getLegalMoves();
-  void print()
-  {
-    board.print();
-  }
   int getState();
+
+  Board *GetBoard();
 };
 #endif

@@ -88,3 +88,8 @@ int ChessGame::getState()
 {
   return state;
 }
+
+
+Board *ChessGame::GetBoard() {
+  return &board;
+}

@@ -47,18 +47,5 @@ public:
   bool inRange(int row, int col);
   int getRows();
   int getCols();
-  void print()
-  {
-    for (auto col : board)
-    {
-      for (auto s : col)
-      {
-        if (!s.isEmpty())
-        {
-          std::cout << s.getRow() << " " << s.getCol() << " " << std::endl;
-        }
-      }
-    }
-  }
 };
 #endif
