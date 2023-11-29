@@ -15,7 +15,7 @@ LIBRARY_PATHS = -LC:\msys64\mingw_dev_lib\x86_64-w64-mingw32\lib -LC:\msys64\min
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CXX) $(OBJECTS) $(CXXFLAGS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(LINKER_FLAGS) $(FRAMEWORK_PATHS) -o $(EXEC)
+	$(CXX) $(OBJECTS) $(CXXFLAGS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(LINKER_FLAGS) -o $(EXEC)
 
 %.o: %.cpp
 	$(CXX) -c -o $@ $< $(CXXFLAGS) $(INCLUDE_PATHS)
