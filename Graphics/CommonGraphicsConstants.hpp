@@ -1,6 +1,0 @@
-#ifndef COMMON_CONSTANTS_HPP
-#define COMMON_CONSTANTS_HPP
-
-
-
-#endif

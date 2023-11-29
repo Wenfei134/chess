@@ -2,3 +2,4 @@
 *.d
 chess
 chess.exe
+.vscode/

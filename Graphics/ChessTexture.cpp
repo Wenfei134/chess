@@ -74,7 +74,9 @@ bool ChessTexture::LoadTextureFromFile(std::string path) {
 // --------------------------------------------------------------------------------------------------------------------
 void ChessTexture::Render(int x, int y, SDL_Rect* sourceSizeRect) {
     // Create the render rectangle window - (x,y) coords and then (width,height) dimensions
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+	// SDL is top left = (0,0) system. X goes to the right, Y goes down. Unfortunately, our x (rows) goes down and y (columns)
+	// goes right. Therefore we swap them here.
+	SDL_Rect renderQuad = { y, x, mWidth, mHeight };
 
 	// If there's a specific snippet we want, we take from sourceSizeRect
 	if (sourceSizeRect)

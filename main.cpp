@@ -16,4 +16,8 @@ int main(int argv, char** args)
 
   ChessController c = ChessController(gSys, game);
   c.start();
+
+  delete game;
+  delete gSys;
+  return 0;
 }

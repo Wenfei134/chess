@@ -12,12 +12,14 @@ class ChessGraphicsSystem;
 
 class ChessController
 {
-  int prev_row;
-  int prev_col;
-  bool hasValidMoves;
+  int selectedPieceRow;
+  int selectedPieceCol;
   vector<vector<vector<Move>>> validMoves;
   ChessGraphicsSystem *gSys;
   ChessGame *game;
+
+  void deselectSelectedPiece();
+  bool hasSelectedPiece();
 
 public:
   ChessController(ChessGraphicsSystem * gSys, ChessGame * game);

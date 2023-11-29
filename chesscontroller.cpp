@@ -11,92 +11,76 @@ ChessController::ChessController(ChessGraphicsSystem * gSys, ChessGame * game) :
 
 void ChessController::handleClick(int row, int col)
 {
-  // before game starts
-  if (game->getState() != game->ACTIVE && prev_row != -1)
-  {
-    game->reset();
-  }
+  // after previous game ends, we replay
+  // if (game->getState() != game->ACTIVE)
+  // {
+  //   start();
+  // }
   // in game
   if (game->getState() == game->ACTIVE)
   {
-    if (!hasValidMoves)
+    if (!hasSelectedPiece())
     {
-      validMoves = game->getLegalMoves();
-      hasValidMoves = true;
-    }
-    if (prev_row == -1)
-    {
-      if (0 <= row && row < 8 && 0 <= col && col < 8)
+      if (!validMoves[row][col].empty())
       {
-        if (validMoves[row][col].size() > 0)
-        {
-          auto highlightedMoves = validMoves[row][col];
-          prev_col = col;
-          prev_row = row;
+        auto highlightedMoves = validMoves[row][col];
+        selectedPieceCol = col;
+        selectedPieceRow = row;
 
-          for (auto moves : highlightedMoves)
-          {
-            std::cout << moves.end->getRow() << " " << moves.end->getCol() << std::endl;
-          }
-          // render
-          return;
-        }
+        // Make sure the renderer highlights
+        gSys->Render(game->GetBoard());
+        return;
       }
     }
     else
     {
-      for (auto mv : validMoves[prev_row][prev_col])
+      for (auto mv : validMoves[selectedPieceRow][selectedPieceCol])
       {
         if (mv.end->getRow() == row && mv.end->getCol() == col)
         {
-          std::cout << "made move" << std::endl;
-          std::cout << "start pos " << prev_row << " " << prev_col << std::endl;
-          std::cout << "end pos " << row << " " << col << std::endl;
           game->takeTurn(mv);
           validMoves = game->getLegalMoves();
-          // render
+          gSys->Render(game->GetBoard());
           return;
         }
       }
-      prev_row = -1;
-      prev_col = -1;
-      // render
+      deselectSelectedPiece();
+      // Dehighlight the rendered moves of the selected piece
+      gSys->Render(game->GetBoard());
+      handleClick(row, col);
       return;
     }
   }
-  if (game->getState() == game->WHITE_WIN)
-  {
-    prev_row = row;
-    prev_col = col;
-    // render
-  }
-  else if (game->getState() == game->BLACK_WIN)
-  {
-    prev_row = row;
-    prev_col = col;
-    // render
-  }
-  else if (game->getState() == game->STALEMATE)
-  {
-    prev_row = row;
-    prev_col = col;
-    // render
-  }
+  // if (game->getState() == game->WHITE_WIN)
+  // {
+  //   gSys->Render(game->GetBoard());
+  // }
+  // else if (game->getState() == game->BLACK_WIN)
+  // {
+  //   gSys->Render(game->GetBoard());
+  // }
+  // else if (game->getState() == game->STALEMATE)
+  // {
+  //   gSys->Render(game->GetBoard());
+  // }
 }
 
 void ChessController::start()
 {
-  enum
-  {
-    WHITE = 0,
-    BLACK
-  };
   // before game begins
   game->reset();
   validMoves = game->getLegalMoves();
-  hasValidMoves = true;
-  prev_row = -1;
-  prev_col = -1;
+  deselectSelectedPiece();
 
   gSys->RunChessGame(game->GetBoard());
+}
+
+
+bool ChessController::hasSelectedPiece() {
+  return (selectedPieceCol != -1 && selectedPieceRow != -1);
+}
+
+void ChessController::deselectSelectedPiece() {
+  selectedPieceCol = -1;
+  selectedPieceRow = -1;
 }

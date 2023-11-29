@@ -1,19 +1,13 @@
 #include "ChessGraphicsSystem.hpp"
-#include "CommonGraphicsConstants.hpp"
+#include "ChessTexture.hpp"
+#include "ClickEventHandler.hpp"
+#include "GraphicsConstants.hpp"
 #include "../board.h"
 #include <SDL_image.h>
 
-const int SCREEN_WIDTH = 504;
-const int SCREEN_HEIGHT = 504;
-
-const int OFFSET_FROM_EDGE_OF_BOARD = 25;
-const int CHESS_TILE_SIZE = 56;
-
-const char *CHESS_PIECES_FILEPATH = "img/pieces.png";
-const char *CHESS_BOARD_FILEPATH = "img/board.png";
 
 // --------------------------------------------------------------------------------------------------------------------
-ChessGraphicsSystem::ChessGraphicsSystem(): mChessPiecesSpriteSheetTexture{ChessTexture(mRenderer)}, mChessBoardTexture{ChessTexture(mRenderer)} {
+ChessGraphicsSystem::ChessGraphicsSystem() {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		throw ("SDL could not initialize! SDL Error: " + std::string(SDL_GetError()) + "\n");
@@ -52,6 +46,10 @@ ChessGraphicsSystem::ChessGraphicsSystem(): mChessPiecesSpriteSheetTexture{Chess
         throw ("SDL_image could not initialize! SDL_image Error:" + std::string(IMG_GetError()) + "\n");
     }
 
+    mClickEventHandler = new ClickEventHandler();
+    mChessBoardTexture = new ChessTexture(mRenderer);
+    mChessPiecesSpriteSheetTexture = new ChessTexture(mRenderer);
+
     LoadAllMedia();
 }
 
@@ -60,8 +58,13 @@ ChessGraphicsSystem::~ChessGraphicsSystem() {
 	// Destroy window	
 	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
-	mWindow = NULL;
-	mRenderer = NULL;
+	mWindow = nullptr;
+	mRenderer = nullptr;
+    
+    delete mChessBoardTexture;
+    delete mChessPiecesSpriteSheetTexture;
+    mChessBoardTexture = nullptr;
+    mChessPiecesSpriteSheetTexture = nullptr;
 
 	// Quit SDL subsystems
 	IMG_Quit();
@@ -112,7 +115,7 @@ int ChessGraphicsSystem::GetChessFigureTextureBoundingRectIndex(PieceColour piec
 void ChessGraphicsSystem::LoadAllMedia() {
 
 	// Load pieces textures
-	if (!mChessPiecesSpriteSheetTexture.LoadTextureFromFile(CHESS_PIECES_FILEPATH)) {
+	if (!mChessPiecesSpriteSheetTexture->LoadTextureFromFile(CHESS_PIECES_FILEPATH)) {
 		throw("Failed to load chess pieces sprite sheet texture!\n");
 	}
 
@@ -124,7 +127,7 @@ void ChessGraphicsSystem::LoadAllMedia() {
     }
 
 	// Load board texture
-	if (!mChessBoardTexture.LoadTextureFromFile(CHESS_BOARD_FILEPATH)) {
+	if (!mChessBoardTexture->LoadTextureFromFile(CHESS_BOARD_FILEPATH)) {
 		throw("Failed to load board texture image!\n");
 	}
 }
@@ -144,14 +147,14 @@ void ChessGraphicsSystem::Render(Board *board) {
 // --------------------------------------------------------------------------------------------------------------------
 void ChessGraphicsSystem::RenderBoardState(Board *board) {
     // Render board and pieces
-    mChessBoardTexture.Render(0, 0);
+    mChessBoardTexture->Render(0, 0);
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             Square *currSquare = board->getSquare(i, j);
             if (!currSquare->isEmpty()) {
                 auto currPiece = currSquare->getPiece();
-                mChessPiecesSpriteSheetTexture.Render(
+                mChessPiecesSpriteSheetTexture->Render(
                     OFFSET_FROM_EDGE_OF_BOARD + i * CHESS_TILE_SIZE,
                     OFFSET_FROM_EDGE_OF_BOARD + j * CHESS_TILE_SIZE,
                     &mChessPiecesTexturesBoundingRects[
@@ -184,7 +187,18 @@ void ChessGraphicsSystem::RunChessGame(Board *board) {
             if( e.type == SDL_QUIT ) {
                 quit = true;
             }
+
+            //Handle click events
+            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                if (e.button.button == SDL_BUTTON_LEFT) {
+                    int clickX, clickY;
+                    SDL_GetMouseState(&clickX, &clickY);
+                    mClickEventHandler->HandleClickEvent(clickX, clickY);
+                }
+            }
         }
+
+        Render(board);
     }
 }
 
