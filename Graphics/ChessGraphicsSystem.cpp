@@ -1,13 +1,20 @@
 #include "ChessGraphicsSystem.hpp"
 #include "ChessTexture.hpp"
-#include "ClickEventHandler.hpp"
-#include "GraphicsConstants.hpp"
 #include "../board.h"
+#include "../chesscontroller.h"
 #include <SDL_image.h>
 
+const int SCREEN_WIDTH = 504;
+const int SCREEN_HEIGHT = 504;
+
+const int OFFSET_FROM_EDGE_OF_BOARD = 28;
+const int CHESS_TILE_SIZE = 56;
+
+const char *CHESS_PIECES_FILEPATH = "Graphics/img/pieces.png";
+const char *CHESS_BOARD_FILEPATH = "Graphics/img/board.png";
 
 // --------------------------------------------------------------------------------------------------------------------
-ChessGraphicsSystem::ChessGraphicsSystem() {
+ChessGraphicsSystem::ChessGraphicsSystem(ChessController *controller) {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		throw ("SDL could not initialize! SDL Error: " + std::string(SDL_GetError()) + "\n");
@@ -46,10 +53,9 @@ ChessGraphicsSystem::ChessGraphicsSystem() {
         throw ("SDL_image could not initialize! SDL_image Error:" + std::string(IMG_GetError()) + "\n");
     }
 
-    mClickEventHandler = new ClickEventHandler();
     mChessBoardTexture = new ChessTexture(mRenderer);
     mChessPiecesSpriteSheetTexture = new ChessTexture(mRenderer);
-
+    mController = controller;
     LoadAllMedia();
 }
 
@@ -66,19 +72,23 @@ ChessGraphicsSystem::~ChessGraphicsSystem() {
     mChessBoardTexture = nullptr;
     mChessPiecesSpriteSheetTexture = nullptr;
 
+    // Controller not deleted here, it is deleted at the destruction of the controller itself.
+
 	// Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-SDL_Point ChessGraphicsSystem::ConvertGridCoordinatesToSDLCoordinates(int x, int y) {
-	auto p = SDL_Point();
-    p.x = OFFSET_FROM_EDGE_OF_BOARD + x*CHESS_TILE_SIZE;
-    p.y = OFFSET_FROM_EDGE_OF_BOARD + y*CHESS_TILE_SIZE;
-    return p;
+SDL_Point ChessGraphicsSystem::ConvertSDLCoordinatesToChessCoordinates(int sdlX, int sdlY) {
+    if (!IsClickInsideBoard(sdlX, sdlY)) {
+        throw ("Cannot convert a click to chess coordinates as it is outside the board!\n");
+    }
+    
+    // X and Y are switched because of SDL coordinate system (X goes across rows, Y goes down columns)
+    return {(sdlY - OFFSET_FROM_EDGE_OF_BOARD) / CHESS_TILE_SIZE,
+            (sdlX - OFFSET_FROM_EDGE_OF_BOARD) / CHESS_TILE_SIZE};
 }
-
 // --------------------------------------------------------------------------------------------------------------------
 int ChessGraphicsSystem::GetChessFigureTextureBoundingRectIndex(PieceColour pieceColour, PieceType pieceType) {
     // In mChessPiecesTexturesBoundingRects, 0-5 are black rook, knight, bishop, queen, king, pawn respectively
@@ -112,6 +122,12 @@ int ChessGraphicsSystem::GetChessFigureTextureBoundingRectIndex(PieceColour piec
 }
 
 // --------------------------------------------------------------------------------------------------------------------
+bool ChessGraphicsSystem::IsClickInsideBoard(int clickX, int clickY) {
+    return (clickX > OFFSET_FROM_EDGE_OF_BOARD && clickX < SCREEN_WIDTH - OFFSET_FROM_EDGE_OF_BOARD && 
+            clickY > OFFSET_FROM_EDGE_OF_BOARD && clickY < SCREEN_HEIGHT - OFFSET_FROM_EDGE_OF_BOARD);
+}
+
+// --------------------------------------------------------------------------------------------------------------------
 void ChessGraphicsSystem::LoadAllMedia() {
 
 	// Load pieces textures
@@ -133,17 +149,33 @@ void ChessGraphicsSystem::LoadAllMedia() {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void ChessGraphicsSystem::Render(Board *board) {
+void ChessGraphicsSystem::Render(Board *board, std::vector<Move> movesToHighlight) {
     // Clear screen
     SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(mRenderer);
 
     RenderBoardState(board);
+    RenderBlueHighlightedMoves(movesToHighlight);
 
     // Update screen
     SDL_RenderPresent(mRenderer);
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+void ChessGraphicsSystem::RenderBlueHighlightedMoves(std::vector<Move> movesToHighlight) {
+    int highlightSize = CHESS_TILE_SIZE / 4;
+
+    SDL_SetRenderDrawColor(mRenderer, 0x0, 0xFF, 0x0, 0xFF);
+    for (auto &move : movesToHighlight) {
+        int moveX = OFFSET_FROM_EDGE_OF_BOARD + move.end->getCol() * CHESS_TILE_SIZE + CHESS_TILE_SIZE / 2 - highlightSize / 2;
+        int moveY = OFFSET_FROM_EDGE_OF_BOARD + move.end->getRow() * CHESS_TILE_SIZE + CHESS_TILE_SIZE / 2 - highlightSize / 2;
+        SDL_Rect rectToFill = {moveX, moveY, highlightSize, highlightSize};
+        SDL_RenderFillRect(mRenderer, &rectToFill);
+    }
+    // Reset draw color
+    SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+}
 // --------------------------------------------------------------------------------------------------------------------
 void ChessGraphicsSystem::RenderBoardState(Board *board) {
     // Render board and pieces
@@ -176,7 +208,7 @@ void ChessGraphicsSystem::RunChessGame(Board *board) {
 
     // Event handler
     SDL_Event e;
-
+    Render(board, {});
     // While application is running
     while (!quit)
     {
@@ -193,12 +225,11 @@ void ChessGraphicsSystem::RunChessGame(Board *board) {
                 if (e.button.button == SDL_BUTTON_LEFT) {
                     int clickX, clickY;
                     SDL_GetMouseState(&clickX, &clickY);
-                    mClickEventHandler->HandleClickEvent(clickX, clickY);
+                    SDL_Point chessSquare = ConvertSDLCoordinatesToChessCoordinates(clickX, clickY);
+                    mController->HandleClick(chessSquare.x, chessSquare.y);
                 }
             }
         }
-
-        Render(board);
     }
 }
 

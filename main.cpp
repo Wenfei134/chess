@@ -4,20 +4,9 @@
 
 int main(int argv, char** args)
 {
-  ChessGraphicsSystem *gSys = nullptr;
-  try {
-      gSys = new ChessGraphicsSystem();
-  } catch (const char *errMsg) {
-      printf(errMsg);
-      return -1;
-  }
+  ChessController *c = new ChessController();
+  c->Start();
 
-  ChessGame *game = new ChessGame(); 
-
-  ChessController c = ChessController(gSys, game);
-  c.start();
-
-  delete game;
-  delete gSys;
+  delete c;
   return 0;
 }

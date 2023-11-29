@@ -1,5 +1,3 @@
-/*This source code copyrighted by Lazy Foo' Productions 2004-2023
-and may not be redistributed without written permission.*/
 #ifndef CHESSTEXTURE_HPP
 #define CHESSTEXTURE_HPP
 
@@ -15,10 +13,6 @@ class ChessTexture
 public:
   ChessTexture(SDL_Renderer *renderer);
   ~ChessTexture();
-
-  // Gets image dimensions
-  int GetWidth();
-  int GetHeight();
 
   // Loads png texture image from file
   bool LoadTextureFromFile(std::string path);

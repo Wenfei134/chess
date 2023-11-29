@@ -2,29 +2,30 @@
 #define CHESSCONTROLLER_H
 
 #include "move.h"
-#include "chessgame.h"
 #include <vector>
 
 using std::vector;
 
 // Fwd declare
 class ChessGraphicsSystem;
+class ChessGame;
 
 class ChessController
 {
-  int selectedPieceRow;
-  int selectedPieceCol;
-  vector<vector<vector<Move>>> validMoves;
-  ChessGraphicsSystem *gSys;
-  ChessGame *game;
+  int mSelectedPieceRow;
+  int mSelectedPieceCol;
+  vector<vector<vector<Move>>> mValidMoves;
+  ChessGraphicsSystem *mGraphicsSystem = nullptr;
+  ChessGame *mGame = nullptr;
 
-  void deselectSelectedPiece();
-  bool hasSelectedPiece();
+  void DeselectSelectedPiece();
+  bool HasSelectedPiece();
 
 public:
-  ChessController(ChessGraphicsSystem * gSys, ChessGame * game);
-  void start();
-  void handleClick(int row, int col);
+  ChessController();
+  ~ChessController();
+  void Start();
+  void HandleClick(int row, int col);
 };
 
 #endif

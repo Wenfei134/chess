@@ -81,11 +81,11 @@ void Board::addPiece(PieceColour colour, PieceType piece, Square *sq)
 
   if (colour == PieceColour::kWhite)
   {
-    pieces[0].push_back(std::move(new_piece));
+    pieces[0].push_back(new_piece);
   }
   else
   {
-    pieces[1].push_back(std::move(new_piece));
+    pieces[1].push_back(new_piece);
   }
 }
 
@@ -185,7 +185,7 @@ void Board::doMove(Move &mv)
   // implement
 
   // update relative variables
-  // if the moving piece hasn't moved set is_first_move true
+  // if the moving piece hasn't moved
   if (!mv.moving_piece->getHasMoved())
   {
     mv.moving_piece->setHasMoved(true);
@@ -197,7 +197,19 @@ void Board::doMove(Move &mv)
 
 void Board::undoMove()
 {
+  if(moves_played.size() == 0){
+    return;
+  }
+
+  auto mv = moves_played[moves_played.size()-1];
+  moves_played.pop_back(); 
+
   // implement
+
+  if (mv.is_first_move)
+  {
+    mv.moving_piece->setHasMoved(false);
+  }
 }
 
 bool Board::isChecked(PieceColour colour)

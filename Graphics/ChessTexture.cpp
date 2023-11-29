@@ -18,16 +18,6 @@ ChessTexture::~ChessTexture() {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-int ChessTexture::GetWidth() {
-    return mWidth;
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-int ChessTexture::GetHeight() {
-    return mHeight;
-}
-
-// --------------------------------------------------------------------------------------------------------------------
 bool ChessTexture::LoadTextureFromFile(std::string path) {
     // Reset the texture if it exists
     if (mTexture) {
