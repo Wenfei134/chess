@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -std=c++14 -Wall -Werror=vla -MMD -Wl,-subsystem,windows
+CXXFLAGS = -g -std=c++14 -Wall -Werror=vla -MMD
 EXEC = chess
 SOURCES = $(shell find . -wholename '**/*.cpp')
 OBJECTS = $(SOURCES:.cpp=.o)
