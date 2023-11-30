@@ -7,7 +7,8 @@ We've provided some starter code for dealing with the GUI and taking in user inp
 - These pieces are displayed on the UI
 - White player starts
 
-<img width="504" alt="Screenshot 2023-11-30 at 4 10 02 PM" src="https://github.com/Wenfei134/chess/assets/60166421/975f892b-0e97-416b-a4ef-57c1f9437b05">
+<img width="400" alt="Screenshot 2023-11-30 at 4 10 02 PM" src="https://github.com/Wenfei134/chess/assets/60166421/975f892b-0e97-416b-a4ef-57c1f9437b05">
+<img width="400" alt="Screenshot 2023-11-30 at 4 12 57 PM" src="https://github.com/Wenfei134/chess/assets/60166421/4df5dae5-5646-4223-8053-8a4315e0c255">
 
 Additionally we handle user input
 - When a user clicks on a piece of their colour the legal moves for that piece are displayed 
@@ -17,8 +18,6 @@ Additionally we handle user input
 - If a different piece is clicked, the legal moves of that piece is shown 
 - If any other click happens, then the piece is deselected
 - When a move happens, the turn switches to the opposite player.
- 
-<img width="503" alt="Screenshot 2023-11-30 at 4 12 57 PM" src="https://github.com/Wenfei134/chess/assets/60166421/4df5dae5-5646-4223-8053-8a4315e0c255">
 
 ### Not implemented
 - Get legal moves of each piece* (except Pawn which has been implemented)
@@ -31,7 +30,7 @@ Additionally we handle user input
 *Legal moves is actually a bit difficult to determine in chess and is done in two phases, with pseudolegal moves that are then filtered to get the actual legal moves. We will explain this in the workshop.
 
 ## System Pre-requisites
-***
+
 ### Supported
 - Windows 64bit with MingW
 - MacOS
@@ -52,7 +51,7 @@ If your system is not supported then you need to install SDL2 on your own.
 2. Update the makefile for your OS so that the `INCLUDE_PATHS` and `LIBRARY_PATHS` point to where you downloaded SDL2. (If you're on Linux good luck, we do not have a Linux Makefile).
 
 ## Running the Game
-***
+
 In the `chess` directory run the command 
 
 Unix: 
