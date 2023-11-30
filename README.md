@@ -17,6 +17,8 @@ Additionally we handle user input
 - If a different piece is clicked, the legal moves of that piece is shown 
 - If any other click happens, then the piece is deselected
 - When a move happens, the turn switches to the opposite player.
+ 
+<img width="503" alt="Screenshot 2023-11-30 at 4 12 57 PM" src="https://github.com/Wenfei134/chess/assets/60166421/4df5dae5-5646-4223-8053-8a4315e0c255">
 
 ### Not implemented
 - Get legal moves of each piece* (except Pawn which has been implemented)
