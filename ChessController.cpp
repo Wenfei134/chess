@@ -20,6 +20,12 @@ void ChessController::HandleClick(int row, int col)
 {
   if (mGame->GetState() == mGame->ACTIVE)
   {
+    if(row == -1 || col == -1){
+      DeselectSelectedPiece();
+      mGraphicsSystem->Render(mGame->GetBoard(), {});
+      return;
+    }
+
     if (!HasSelectedPiece())
     {
       if (!mValidMoves[row][col].empty())

@@ -95,7 +95,7 @@ SDL_Point ChessGraphicsSystem::ConvertSDLCoordinatesToChessCoordinates(int sdlX,
 {
     if (!IsClickInsideBoard(sdlX, sdlY))
     {
-        throw std::runtime_error("Cannot convert a click to chess coordinates as it is outside the board!");
+        return {-1, -1};
     }
     
     // X and Y are switched because of SDL coordinate system (X goes across rows, Y goes down columns)
@@ -256,12 +256,8 @@ void ChessGraphicsSystem::RunChessGame(Board *board)
                 {
                     int clickX, clickY;
                     SDL_GetMouseState(&clickX, &clickY);
-                    try{
-                      SDL_Point chessSquare = ConvertSDLCoordinatesToChessCoordinates(clickX, clickY);
-                      mController->HandleClick(chessSquare.x, chessSquare.y);
-                    } catch (...){
-                      continue;
-                    }
+                    SDL_Point chessSquare = ConvertSDLCoordinatesToChessCoordinates(clickX, clickY);
+                    mController->HandleClick(chessSquare.x, chessSquare.y);
                 }
             }
         }
