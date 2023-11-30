@@ -37,7 +37,7 @@ Additionally we handle user input
 
 For Windows if you followed the set up from the first workshop, you *should* have MingW.
 
-If your system is supported, we have the SDL2 libraries already included wtihin the GitHub repository. This means cloning the repository should be sufficient and no additional setup is required. Otherwise, continue reading.
+If your system is supported, cloning the repository should be sufficient and no additional setup is required. Otherwise, continue reading.
 
 ### Not supported
 - Linux
