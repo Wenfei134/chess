@@ -4,7 +4,7 @@
 #include "../ChessController.hpp"
 #include <SDL_image.h>
 
-#include <exception>
+#include <stdexcept>
 
 const int SCREEN_WIDTH = 504;
 const int SCREEN_HEIGHT = 504;
