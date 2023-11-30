@@ -4,6 +4,8 @@
 #include "../ChessController.hpp"
 #include <SDL_image.h>
 
+#include <exception>
+
 const int SCREEN_WIDTH = 504;
 const int SCREEN_HEIGHT = 504;
 
@@ -19,7 +21,7 @@ ChessGraphicsSystem::ChessGraphicsSystem(ChessController *controller)
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-		throw ("SDL could not initialize! SDL Error: " + std::string(SDL_GetError()) + "\n");
+		throw std::runtime_error("SDL could not initialize! SDL Error: " + std::string(SDL_GetError()));
 	}
 
     // Set texture filtering to linear
@@ -40,14 +42,14 @@ ChessGraphicsSystem::ChessGraphicsSystem(ChessController *controller)
 
     if(!mWindow)
     {
-        throw ("Window could not be created! SDL Error: " +  std::string(SDL_GetError()) + "\n");
+        throw std::runtime_error("Window could not be created! SDL Error: " +  std::string(SDL_GetError()));
     }
 
     //Create renderer for window
     mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
     if(!mRenderer)
     {
-        throw ("Renderer could not be created! SDL Error:" + std::string(SDL_GetError()) + "\n");
+        throw std::runtime_error("Renderer could not be created! SDL Error:" + std::string(SDL_GetError()));
     }
 
     //Initialize renderer color
@@ -57,7 +59,7 @@ ChessGraphicsSystem::ChessGraphicsSystem(ChessController *controller)
     int imgFlags = IMG_INIT_PNG;
     if(!(IMG_Init(imgFlags) & imgFlags))
     {
-        throw ("SDL_image could not initialize! SDL_image Error:" + std::string(IMG_GetError()) + "\n");
+        throw std::runtime_error("SDL_image could not initialize! SDL_image Error:" + std::string(IMG_GetError()));
     }
 
     mChessBoardTexture = new ChessTexture(mRenderer);
@@ -93,7 +95,7 @@ SDL_Point ChessGraphicsSystem::ConvertSDLCoordinatesToChessCoordinates(int sdlX,
 {
     if (!IsClickInsideBoard(sdlX, sdlY))
     {
-        throw ("Cannot convert a click to chess coordinates as it is outside the board!\n");
+        throw std::runtime_error("Cannot convert a click to chess coordinates as it is outside the board!");
     }
     
     // X and Y are switched because of SDL coordinate system (X goes across rows, Y goes down columns)
@@ -148,7 +150,7 @@ void ChessGraphicsSystem::LoadAllMedia()
 	// Load pieces textures
 	if (!mChessPiecesSpriteSheetTexture->LoadTextureFromFile(CHESS_PIECES_FILEPATH))
     {
-		throw("Failed to load chess pieces sprite sheet texture!\n");
+		throw std::runtime_error("Failed to load chess pieces sprite sheet texture!");
 	}
 
     for (int i = 0; i < 12; i++)
@@ -162,7 +164,7 @@ void ChessGraphicsSystem::LoadAllMedia()
 	// Load board texture
 	if (!mChessBoardTexture->LoadTextureFromFile(CHESS_BOARD_FILEPATH))
     {
-		throw("Failed to load board texture image!\n");
+		throw std::runtime_error("Failed to load board texture image!");
 	}
 }
 
@@ -254,8 +256,12 @@ void ChessGraphicsSystem::RunChessGame(Board *board)
                 {
                     int clickX, clickY;
                     SDL_GetMouseState(&clickX, &clickY);
-                    SDL_Point chessSquare = ConvertSDLCoordinatesToChessCoordinates(clickX, clickY);
-                    mController->HandleClick(chessSquare.x, chessSquare.y);
+                    try{
+                      SDL_Point chessSquare = ConvertSDLCoordinatesToChessCoordinates(clickX, clickY);
+                      mController->HandleClick(chessSquare.x, chessSquare.y);
+                    } catch (...){
+                      continue;
+                    }
                 }
             }
         }
