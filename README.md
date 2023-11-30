@@ -1,5 +1,5 @@
 # Chess Game
-This is the final project for the C++ Workshops. The idea is to create a chess game.
+This is the final project for the C++ Workshops. The idea is to create a chess game (excluding the moves empassant, castling, and pawn promotion).
 
 ## The Rules of Chess
 
