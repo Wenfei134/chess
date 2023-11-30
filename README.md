@@ -5,7 +5,9 @@ This is the final project for the C++ Workshops. The idea is to create a chess g
 We've provided some starter code for dealing with the GUI and taking in user input, so when the game first runs 
 - The board initializes with the pieces of each side in their correct locations
 - These pieces are displayed on the UI
-- White player starts 
+- White player starts
+
+<img width="504" alt="Screenshot 2023-11-30 at 4 10 02 PM" src="https://github.com/Wenfei134/chess/assets/60166421/975f892b-0e97-416b-a4ef-57c1f9437b05">
 
 Additionally we handle user input
 - When a user clicks on a piece of their colour the legal moves for that piece are displayed 
