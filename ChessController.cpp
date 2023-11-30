@@ -20,7 +20,8 @@ void ChessController::HandleClick(int row, int col)
 {
   if (mGame->GetState() == mGame->ACTIVE)
   {
-    if(row == -1 || col == -1){
+    if(row == -1 || col == -1 || (row == mSelectedPieceRow && col == mSelectedPieceCol))
+    {
       DeselectSelectedPiece();
       mGraphicsSystem->Render(mGame->GetBoard(), {});
       return;
@@ -37,6 +38,8 @@ void ChessController::HandleClick(int row, int col)
         // Renderer highlights moves
         mGraphicsSystem->Render(mGame->GetBoard(), highlightedMoves);
         return;
+      } else {
+        mGraphicsSystem->Render(mGame->GetBoard(), {});
       }
     }
     else
@@ -53,7 +56,6 @@ void ChessController::HandleClick(int row, int col)
       }
       DeselectSelectedPiece();
       // Renderer renders over highlighted moves if there are any
-      mGraphicsSystem->Render(mGame->GetBoard(), {});
       HandleClick(row, col);
       return;
     }

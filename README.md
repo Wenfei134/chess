@@ -14,10 +14,10 @@ Additionally we handle user input
 - When a user clicks on a piece of their colour the legal moves for that piece are displayed 
     - Currently only the Pawn piece will return a list of moves, every other peice returns an empty list so it looks like nothing happens, but the input is still being handled correctly
 - If a legal move is clicked, tell the game to move the piece. 
-    - Currently the move function does nothing, so it is called but the UI doesn't change. The input is handled correctly but the game logic has not yet been implemented. 
+    - Currently the move function does nothing, so the input is handled correctly but it looks like nothing happens
 - If a different piece is clicked, the legal moves of that piece is shown 
 - If any other click happens, then the piece is deselected
-- When a move happens, the turn switches to the opposite player.
+- When a move happens, the turn switches to the opposite player
 
 ### Not implemented
 - Get legal moves of each piece* (except Pawn which has been implemented)
