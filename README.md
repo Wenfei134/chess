@@ -23,7 +23,7 @@ This is known as *checkmate*. Simply placing the King under attack whether escap
 There are additional rules that govern piece movement:
 - Pawn is the only piece whose standard move is different from its taking move. Pawns take diagonally. 
 - If there are no legal moves but your King is not in check, then that is a *stalemate* and the game is a draw
-- If your King is currently in check, a legal move must make a move that takes it out of check 
+- If your King is currently in check, a move must take it out of check to be legal
 - If your King is not in check, a move is not legal if it puts your King in check 
 
 That is, it's not legal to make a move such that after the move is completed, your King is in check.
