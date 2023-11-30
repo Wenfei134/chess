@@ -1,11 +1,7 @@
-#include "chesscontroller.h"
-#include "move.h"
-#include "chessgame.h"
+#include "ChessController.hpp"
+#include "ChessGame.hpp"
 #include "Graphics/ChessGraphicsSystem.hpp"
-#include <iostream>
-#include <string>
-#include <stdexcept>
-#include <utility>
+#include "Square.hpp"
 
 // --------------------------------------------------------------------------------------------------------------------
 ChessController::ChessController() {
@@ -22,13 +18,7 @@ ChessController::~ChessController() {
 // --------------------------------------------------------------------------------------------------------------------
 void ChessController::HandleClick(int row, int col)
 {
-  // after previous game ends, we replay
-  // if (game->getState() != game->ACTIVE)
-  // {
-  //   start();
-  // }
-  // in game
-  if (mGame->getState() == mGame->ACTIVE)
+  if (mGame->GetState() == mGame->ACTIVE)
   {
     if (!HasSelectedPiece())
     {
@@ -38,7 +28,7 @@ void ChessController::HandleClick(int row, int col)
         mSelectedPieceCol = col;
         mSelectedPieceRow = row;
 
-        // Make sure the renderer highlights
+        // Renderer highlights moves
         mGraphicsSystem->Render(mGame->GetBoard(), highlightedMoves);
         return;
       }
@@ -47,41 +37,27 @@ void ChessController::HandleClick(int row, int col)
     {
       for (auto mv : mValidMoves[mSelectedPieceRow][mSelectedPieceCol])
       {
-        if (mv.end->getRow() == row && mv.end->getCol() == col)
+        if (mv.mEnd->GetRow() == row && mv.mEnd->GetCol() == col)
         {
-          mGame->takeTurn(mv);
-          mValidMoves = mGame->getLegalMoves();
+          mGame->TakeTurn(mv);
+          mValidMoves = mGame->GetLegalMoves();
           mGraphicsSystem->Render(mGame->GetBoard(), {});
           return;
         }
       }
       DeselectSelectedPiece();
-      // Dehighlight the rendered moves of the selected piece
+      // Renderer renders over highlighted moves if there are any
       mGraphicsSystem->Render(mGame->GetBoard(), {});
       HandleClick(row, col);
       return;
     }
   }
-  // if (game->getState() == game->WHITE_WIN)
-  // {
-  //   gSys->Render(game->GetBoard());
-  // }
-  // else if (game->getState() == game->BLACK_WIN)
-  // {
-  //   gSys->Render(game->GetBoard());
-  // }
-  // else if (game->getState() == game->STALEMATE)
-  // {
-  //   gSys->Render(game->GetBoard());
-  // }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 void ChessController::Start()
 {
-  // before game begins
-  mGame->reset();
-  mValidMoves = mGame->getLegalMoves();
+  mValidMoves = mGame->GetLegalMoves();
   DeselectSelectedPiece();
 
   mGraphicsSystem->RunChessGame(mGame->GetBoard());

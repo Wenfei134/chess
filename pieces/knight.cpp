@@ -1,12 +1,16 @@
-#include "knight.h"
-#include "../board.h"
-#include "../move.h"
-#include "../square.h"
+#include "../Board.hpp"
+#include "../Move.hpp"
+#include "../Square.hpp"
+#include "Knight.hpp"
 
+// --------------------------------------------------------------------------------------------------------------------
 Knight::Knight(PieceColour colour, PieceType name) : Piece(colour, name) {}
 
-vector<Move> Knight::listPseudoLegalMoves(Board &board)
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Knight::ListPseudoLegalMoves(Board *board)
 {
-  pseudo_legal_moves.clear();
-  return pseudo_legal_moves;
+  mPseudoLegalMoves.clear();
+  return mPseudoLegalMoves;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

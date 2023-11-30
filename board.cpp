@@ -1,56 +1,80 @@
-#include "board.h"
-#include <iostream>
-#include <stdexcept>
-#include "pieces/bishop.h"
-#include "pieces/king.h"
-#include "pieces/knight.h"
-#include "pieces/pawn.h"
-#include "pieces/piece.h"
-#include "pieces/queen.h"
-#include "pieces/rook.h"
-#include "move.h"
+#include "Board.hpp"
+#include "Pieces/Bishop.hpp"
+#include "Pieces/King.hpp"
+#include "Pieces/Knight.hpp"
+#include "Pieces/Pawn.hpp"
+#include "Pieces/Queen.hpp"
+#include "Pieces/Rook.hpp"
 
+#include <stdexcept>
+
+// --------------------------------------------------------------------------------------------------------------------
 Board::Board()
 {
   for (int i = 0; i < ROWS; ++i)
   {
-    vector<Square> row;
-    board.emplace_back(row);
+    mBoard.emplace_back(std::vector<Square>());
     for (int j = 0; j < COLS; ++j)
     {
-      board.at(i).push_back(Square(i, j));
+      mBoard[i].emplace_back(Square(i, j));
     }
   }
+
+  PieceType backRow[COLS] = {
+    PieceType::kRook,
+    PieceType::kKnight,
+    PieceType::kBishop,
+    PieceType::kQueen,
+    PieceType::kKing,
+    PieceType::kBishop,
+    PieceType::kKnight,
+    PieceType::kRook
+  };
+  for (int col = 0; col < COLS; ++col)
+  {
+    AddPiece(PieceColour::kBlack, backRow[col], GetSquare(0, col));
+    AddPiece(PieceColour::kBlack, PieceType::kPawn, GetSquare(1, col));
+    AddPiece(PieceColour::kWhite, PieceType::kPawn, GetSquare(6, col));
+    AddPiece(PieceColour::kWhite, backRow[col], GetSquare(7, col));
+  }
+  mKings[0] = GetSquare(7, 4)->GetPiece(); // white king
+  mKings[1] = GetSquare(0, 4)->GetPiece(); // black king
 }
 
-Board::~Board() { empty(); }
+// --------------------------------------------------------------------------------------------------------------------
+Board::~Board()
+{
+  Empty();
+}
 
-void Board::empty()
+// --------------------------------------------------------------------------------------------------------------------
+void Board::Empty()
 {
   for (int i = 0; i < NUM_COLOURS; ++i)
   {
-    while (pieces[i].size() > 0)
+    while (mPieces[i].size() > 0)
     {
-      if (!pieces[i].back()->isDead())
+      if (!mPieces[i].back()->IsDead())
       {
-        pieces[i].back()->getPosition()->empty();
+        mPieces[i].back()->GetPosition()->Empty();
       }
-      pieces[i].pop_back();
+      mPieces[i].pop_back();
     }
   }
-  while (moves_played.size() > 0)
+  while (mMovesPlayed.size() > 0)
   {
-    moves_played.pop_back();
+    mMovesPlayed.pop_back();
   }
 }
 
-void Board::addPiece(PieceColour colour, PieceType piece, Square *sq)
+// --------------------------------------------------------------------------------------------------------------------
+void Board::AddPiece(PieceColour colour, PieceType piece, Square *sq)
 {
   if (colour != PieceColour::kWhite && colour != PieceColour::kBlack)
   {
-    throw std::invalid_argument("addPiece: Invalid colour");
+    throw std::invalid_argument("AddPiece: Invalid colour");
   }
-  shared_ptr<Piece> new_piece;
+  std::shared_ptr<Piece> new_piece;
 
   switch (piece)
   {
@@ -76,58 +100,41 @@ void Board::addPiece(PieceColour colour, PieceType piece, Square *sq)
     throw std::invalid_argument("invalid type of piece");
   }
 
-  sq->empty();
-  sq->place(new_piece);
+  sq->Empty();
+  sq->Place(new_piece);
 
   if (colour == PieceColour::kWhite)
   {
-    pieces[0].push_back(new_piece);
+    mPieces[0].push_back(new_piece);
   }
   else
   {
-    pieces[1].push_back(new_piece);
+    mPieces[1].push_back(new_piece);
   }
 }
 
-void Board::init()
+// --------------------------------------------------------------------------------------------------------------------
+Move Board::GetLastMove()
 {
-  empty();
-  PieceType backrow[COLS] = {PieceType::kRook, PieceType::kKnight, PieceType::kBishop, PieceType::kQueen, PieceType::kKing, PieceType::kBishop, PieceType::kKnight, PieceType::kRook};
-  for (int col = 0; col < COLS; ++col)
-  {
-    addPiece(PieceColour::kBlack, backrow[col], getSquare(0, col));
-    addPiece(PieceColour::kBlack, PieceType::kPawn, getSquare(1, col));
-    addPiece(PieceColour::kWhite, PieceType::kPawn, getSquare(6, col));
-    addPiece(PieceColour::kWhite, backrow[col], getSquare(7, col));
-  }
-  kings[0] = getSquare(7, 4)->getPiece(); // white king
-  kings[1] = getSquare(0, 4)->getPiece(); // black king
-}
-
-int Board::getNumMovesPlayed()
-{
-  return moves_played.size();
-}
-
-Move Board::getLastMove()
-{
-  if (moves_played.size() == 0)
+  if (mMovesPlayed.size() == 0)
   {
     std::logic_error("getLastMove: No move to pop found");
   }
-  return moves_played.back();
+  return mMovesPlayed.back();
 }
 
-Square *Board::getSquare(int row, int col)
+// --------------------------------------------------------------------------------------------------------------------
+Square *Board::GetSquare(int row, int col)
 {
   if (row < 0 || ROWS <= row || col < 0 || COLS <= col)
   {
-    throw std::invalid_argument("getSquare(int, int): Square out of range\n");
+    throw std::invalid_argument("GetSquare(int, int): Square out of range\n");
   }
-  return &board[row][col];
+  return &mBoard[row][col];
 }
 
-bool Board::inRange(int row, int col)
+// --------------------------------------------------------------------------------------------------------------------
+bool Board::InRange(int row, int col)
 {
   if (row < 0 || ROWS <= row || col < 0 || COLS <= col)
   {
@@ -136,17 +143,27 @@ bool Board::inRange(int row, int col)
   return true;
 }
 
-int Board::getRows() { return ROWS; }
+// --------------------------------------------------------------------------------------------------------------------
+int Board::GetRows()
+{ 
+  return ROWS; 
+}
 
-int Board::getCols() { return COLS; }
+// --------------------------------------------------------------------------------------------------------------------
+int Board::GetCols()
+{ 
+  return COLS; 
+}
 
+// --------------------------------------------------------------------------------------------------------------------
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The functions below are stub functions to implement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-vector<Move> Board::listLegalMoves(PieceColour colour)
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Board::ListLegalMoves(PieceColour colour)
 {
   int index;
   if (colour == PieceColour::kWhite)
@@ -157,83 +174,90 @@ vector<Move> Board::listLegalMoves(PieceColour colour)
   {
     index = 1;
   }
-  vector<Move> legalMoves;
-  int len = pieces[index].size();
+  std::vector<Move> legalMoves;
+  int len = mPieces[index].size();
   for (int i = 0; i < len; ++i)
   {
-    auto piece = pieces[index][i];
-    if (piece->isDead())
+    auto piece = mPieces[index][i];
+    if (piece->IsDead())
     {
       continue;
     }
-    vector<Move> pseudo_legal_moves = piece->listPseudoLegalMoves(*this);
+    std::vector<Move> pseudo_legal_moves = piece->ListPseudoLegalMoves(this);
     for (auto mv : pseudo_legal_moves)
     {
-      doMove(mv);
-      if (!isChecked(mv.moving_piece->getColour()))
+      DoMove(mv);
+      if (!IsChecked(mv.mMovingPiece->GetColour()))
       {
         legalMoves.push_back(mv);
       }
-      undoMove();
+      UndoMove();
     }
   }
   return legalMoves;
 }
 
-void Board::doMove(Move &mv)
+// --------------------------------------------------------------------------------------------------------------------
+void Board::DoMove(Move &mv)
 {
   // implement
 
   // update relative variables
   // if the moving piece hasn't moved
-  if (!mv.moving_piece->getHasMoved())
+  if (!mv.mMovingPiece->GetHasMoved())
   {
-    mv.moving_piece->setHasMoved(true);
+    mv.mMovingPiece->SetHasMoved(true);
   }
 
   // record the move
-  moves_played.push_back(mv);
+  mMovesPlayed.push_back(mv);
 }
 
-void Board::undoMove()
+// --------------------------------------------------------------------------------------------------------------------
+void Board::UndoMove()
 {
-  if(moves_played.size() == 0){
+  if(mMovesPlayed.size() == 0){
     return;
   }
 
-  auto mv = moves_played[moves_played.size()-1];
-  moves_played.pop_back(); 
+  auto mv = mMovesPlayed[mMovesPlayed.size()-1];
+  mMovesPlayed.pop_back(); 
 
   // implement
 
-  if (mv.is_first_move)
+  if (mv.mIsFirstMove)
   {
-    mv.moving_piece->setHasMoved(false);
+    mv.mMovingPiece->SetHasMoved(false);
   }
 }
 
-bool Board::isChecked(PieceColour colour)
+// --------------------------------------------------------------------------------------------------------------------
+bool Board::IsChecked(PieceColour colour)
 {
   Square *king_pos;
   if (colour == PieceColour::kWhite)
   {
-    king_pos = kings[0]->getPosition();
+    king_pos = mKings[0]->GetPosition();
   }
   else
   {
-    king_pos = kings[1]->getPosition();
+    king_pos = mKings[1]->GetPosition();
   }
 
   // implement
   return false;
 }
 
-bool Board::isCheckmated(PieceColour colour)
+// --------------------------------------------------------------------------------------------------------------------
+bool Board::IsCheckmated(PieceColour colour)
 {
   return false;
 }
 
-bool Board::isStalemated(PieceColour colour)
+// --------------------------------------------------------------------------------------------------------------------
+bool Board::IsStalemated(PieceColour colour)
 {
   return false;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

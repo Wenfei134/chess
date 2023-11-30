@@ -1,82 +1,69 @@
-#include "chessgame.h"
-#include "board.h"
-#include "move.h"
-#include "pieces/piece.h"
-#include <iostream>
-#include <string>
+#include "ChessGame.hpp"
+#include "Board.hpp"
+#include "Move.hpp"
+#include "Pieces/Piece.hpp"
 
+#include <stdexcept>
+
+// --------------------------------------------------------------------------------------------------------------------
 ChessGame::ChessGame()
 {
-  state = INITIAL;
+  mBoard = new Board();
 }
 
-void ChessGame::reset()
+// --------------------------------------------------------------------------------------------------------------------
+ChessGame::~ChessGame()
 {
-  if (!setted)
-  {
-    board.init();
-    player_in_turn = PieceColour::kWhite;
-  }
-  else
-  {
-    setted = false;
-  }
-  state = ACTIVE;
+  delete mBoard;
 }
 
-void ChessGame::setup()
+// --------------------------------------------------------------------------------------------------------------------
+void ChessGame::TakeTurn(Move mv)
 {
-  if (!setted)
-  {
-    board.init();
-  }
-  setted = true;
-}
-
-void ChessGame::takeTurn(Move mv)
-{
-  if (state != ACTIVE)
+  if (mState != ACTIVE)
   {
     throw std::logic_error("Game is already done");
   }
-  board.doMove(mv);
-  player_in_turn = player_in_turn == PieceColour::kWhite ? PieceColour::kBlack : PieceColour::kWhite; // white if black, black if white
-  if (board.isCheckmated(player_in_turn))
+  mBoard->DoMove(mv);
+  // white if black, black if white
+  mPlayerInTurn = mPlayerInTurn == PieceColour::kWhite ? PieceColour::kBlack : PieceColour::kWhite;
+  if (mBoard->IsCheckmated(mPlayerInTurn))
   {
-    if (player_in_turn == PieceColour::kWhite)
+    if (mPlayerInTurn == PieceColour::kWhite)
     {
-      state = BLACK_WIN;
+      mState = BLACK_WIN;
     }
     else
     {
-      state = WHITE_WIN;
+      mState = WHITE_WIN;
     }
   }
-  else if (board.isStalemated(player_in_turn))
+  else if (mBoard->IsStalemated(mPlayerInTurn))
   {
-    state = STALEMATE;
+    mState = STALEMATE;
   }
 }
 
-vector<vector<vector<Move>>> ChessGame::getLegalMoves()
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<std::vector<std::vector<Move>>> ChessGame::GetLegalMoves()
 {
-  vector<vector<vector<Move>>> ret;
+  std::vector<std::vector<std::vector<Move>>> ret;
   for (int i = 0; i < 8; i++)
   {
-    vector<vector<Move>> row;
+    std::vector<std::vector<Move>> row;
     for (int j = 0; j < 8; j++)
     {
-      row.push_back(vector<Move>{});
+      row.emplace_back(std::vector<Move>{});
     }
     ret.push_back(row);
   }
 
-  vector<Move> legalMoves = board.listLegalMoves(player_in_turn);
+  std::vector<Move> legalMoves = mBoard->ListLegalMoves(mPlayerInTurn);
   for (auto move : legalMoves)
   {
 
-    int r = move.start->getRow();
-    int c = move.start->getCol();
+    int r = move.mStart->GetRow();
+    int c = move.mStart->GetCol();
 
     ret[r][c].push_back(move);
   }
@@ -84,12 +71,15 @@ vector<vector<vector<Move>>> ChessGame::getLegalMoves()
   return ret;
 }
 
-int ChessGame::getState()
+// --------------------------------------------------------------------------------------------------------------------
+int ChessGame::GetState()
 {
-  return state;
+  return mState;
 }
 
-
+// --------------------------------------------------------------------------------------------------------------------
 Board *ChessGame::GetBoard() {
-  return &board;
+  return mBoard;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

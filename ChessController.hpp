@@ -1,10 +1,9 @@
 #ifndef CHESSCONTROLLER_H
 #define CHESSCONTROLLER_H
 
-#include "move.h"
-#include <vector>
+#include "Move.hpp"
 
-using std::vector;
+#include <vector>
 
 // Fwd declare
 class ChessGraphicsSystem;
@@ -12,9 +11,9 @@ class ChessGame;
 
 class ChessController
 {
-  int mSelectedPieceRow;
-  int mSelectedPieceCol;
-  vector<vector<vector<Move>>> mValidMoves;
+  int mSelectedPieceRow = -1; // -1 means none selected
+  int mSelectedPieceCol = -1; // -1 means none selected
+  std::vector<std::vector<std::vector<Move>>> mValidMoves;
   ChessGraphicsSystem *mGraphicsSystem = nullptr;
   ChessGame *mGame = nullptr;
 

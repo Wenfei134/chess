@@ -1,8 +1,9 @@
 #ifndef CHESSGRAPHICSSYSTEM_H
 #define CHESSGRAPHICSSYSTEM_H
 
-#include "../pieces/piece.h"
-#include "../move.h"
+#include "../Pieces/Piece.hpp"
+#include "../Move.hpp"
+
 #include <SDL.h>
 
 // Fwd Declare
@@ -10,7 +11,8 @@ class Board;
 class ChessController;
 class ChessTexture;
 
-class ChessGraphicsSystem {
+class ChessGraphicsSystem
+{
 
     public:
         ChessGraphicsSystem(ChessController *controller);

@@ -9,19 +9,22 @@
 ChessTexture::ChessTexture(SDL_Renderer *renderer) : mTexture(nullptr), mWidth(0), mHeight(0), mRenderer(renderer) {}
 
 // --------------------------------------------------------------------------------------------------------------------
-ChessTexture::~ChessTexture() {
+ChessTexture::~ChessTexture()
+{
 	if(mTexture)
 	{
-		SDL_DestroyTexture( mTexture );
+		SDL_DestroyTexture(mTexture);
 		mTexture = nullptr;
 	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-bool ChessTexture::LoadTextureFromFile(std::string path) {
+bool ChessTexture::LoadTextureFromFile(std::string path)
+{
     // Reset the texture if it exists
-    if (mTexture) {
-        SDL_DestroyTexture( mTexture );
+    if (mTexture)
+	{
+        SDL_DestroyTexture(mTexture);
 		mTexture = nullptr;
         mHeight = 0;
         mWidth = 0;
@@ -31,7 +34,7 @@ bool ChessTexture::LoadTextureFromFile(std::string path) {
 	SDL_Texture* newTexture = nullptr;
 
 	// Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (!loadedSurface)
 	{
 		printf("Unable to load image at %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
@@ -62,11 +65,12 @@ bool ChessTexture::LoadTextureFromFile(std::string path) {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void ChessTexture::Render(int x, int y, SDL_Rect* sourceSizeRect) {
+void ChessTexture::Render(int x, int y, SDL_Rect* sourceSizeRect)
+{
     // Create the render rectangle window - (x,y) coords and then (width,height) dimensions
 	// SDL is top left = (0,0) system. X goes to the right, Y goes down. Unfortunately, our x (rows) goes down and y (columns)
 	// goes right. Therefore we swap them here.
-	SDL_Rect renderQuad = { y, x, mWidth, mHeight };
+	SDL_Rect renderQuad = {y, x, mWidth, mHeight};
 
 	// If there's a specific snippet we want, we take from sourceSizeRect
 	if (sourceSizeRect)

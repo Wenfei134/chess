@@ -1,12 +1,13 @@
 #ifndef BISHOP_H
 #define BISHOP_H
-#include "piece.h"
+
+#include "Piece.hpp"
 
 class Bishop : public Piece
 {
 public:
   Bishop(PieceColour colour, PieceType name);
-  vector<Move> listPseudoLegalMoves(Board &board) override;
+  std::vector<Move> ListPseudoLegalMoves(Board *board) override;
 };
 
 #endif

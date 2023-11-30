@@ -1,49 +1,60 @@
-#include "piece.h"
-#include "../square.h"
-#include "../board.h"
+#include "Piece.hpp"
+#include "../Square.hpp"
+#include "../Board.hpp"
 
-Piece::Piece(PieceColour colour, PieceType name) : colour{colour}, name{name}, position{nullptr} {}
+// --------------------------------------------------------------------------------------------------------------------
+Piece::Piece(PieceColour colour, PieceType name) : mColour{colour}, mName{name}, mPosition{nullptr} {}
 
-void Piece::setPosition(Square *sq)
+// --------------------------------------------------------------------------------------------------------------------
+void Piece::SetPosition(Square *sq)
 {
-  position = sq;
+  mPosition = sq;
 }
 
-Square *Piece::getPosition()
+// --------------------------------------------------------------------------------------------------------------------
+Square *Piece::GetPosition()
 {
-  return position;
+  return mPosition;
 }
 
-bool Piece::isDead()
+// --------------------------------------------------------------------------------------------------------------------
+bool Piece::IsDead()
 {
-  return position == nullptr;
+  return mPosition == nullptr;
 }
 
-bool Piece::getHasMoved()
+// --------------------------------------------------------------------------------------------------------------------
+bool Piece::GetHasMoved()
 {
-  return has_moved;
+  return mHasMoved;
 }
 
-void Piece::setHasMoved(bool has_moved)
+// --------------------------------------------------------------------------------------------------------------------
+void Piece::SetHasMoved(bool has_moved)
 {
-  this->has_moved = has_moved;
+  this->mHasMoved = has_moved;
 }
 
-PieceColour Piece::getColour()
+// --------------------------------------------------------------------------------------------------------------------
+PieceColour Piece::GetColour()
 {
-  return colour;
+  return mColour;
 }
 
-PieceType Piece::getType()
+// --------------------------------------------------------------------------------------------------------------------
+PieceType Piece::GetType()
 {
-  return name;
+  return mName;
 }
 
-bool Piece::isBlockedByPiece(Move &mv)
+// --------------------------------------------------------------------------------------------------------------------
+bool Piece::IsBlockedByPiece(Move &mv)
 {
-  if (mv.end->isEmpty())
+  if (mv.mEnd->IsEmpty())
   {
     return false;
   }
   return true;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

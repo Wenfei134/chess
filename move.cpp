@@ -1,19 +1,22 @@
-#include "move.h"
-#include "square.h"
-#include "board.h"
-#include "pieces/piece.h"
+#include "Board.hpp"
+#include "Move.hpp"
+#include "Pieces/Piece.hpp"
+#include "Square.hpp"
 
-Move::Move(Square *start, Square *end, Board &b) : start{start}, end{end}
+// --------------------------------------------------------------------------------------------------------------------
+Move::Move(Square *start, Square *end, Board &b) : mStart{start}, mEnd{end}
 {
-  if (!start->isEmpty())
+  if (!start->IsEmpty())
   {
-    moving_piece = start->getPiece();
-    is_first_move = !moving_piece->getHasMoved();
+    mMovingPiece = start->GetPiece();
+    mIsFirstMove = !mMovingPiece->GetHasMoved();
   }
 
-  if (!end->isEmpty())
+  if (!end->IsEmpty())
   {
-    is_attack = true;
-    killed_piece = end->getPiece();
+    mIsAttack = true;
+    mKilledPiece = end->GetPiece();
   }
 }
+
+// --------------------------------------------------------------------------------------------------------------------

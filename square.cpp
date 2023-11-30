@@ -1,28 +1,49 @@
-#include "square.h"
-#include "pieces/piece.h"
+#include "Square.hpp"
+#include "Pieces/Piece.hpp"
 
-Square::Square(int row, int col) : ROW{row}, COL{col}, piece{nullptr} {}
+// --------------------------------------------------------------------------------------------------------------------
+Square::Square(int row, int col) : ROW{row}, COL{col}, mPiece{nullptr} {}
 
-void Square::place(shared_ptr<Piece> &pc)
+// --------------------------------------------------------------------------------------------------------------------
+void Square::Place(std::shared_ptr<Piece> &pc)
 {
-  empty();
-  piece = pc;
-  piece->setPosition(this);
+  Empty();
+  mPiece = pc;
+  mPiece->SetPosition(this);
 }
-void Square::empty()
+
+// --------------------------------------------------------------------------------------------------------------------
+void Square::Empty()
 {
-  if (!isEmpty())
+  if (!IsEmpty())
   {
-    piece->setPosition(nullptr);
-    piece = nullptr;
+    mPiece->SetPosition(nullptr);
+    mPiece = nullptr;
   }
 }
-bool Square::isEmpty() { return piece == nullptr; }
 
-shared_ptr<Piece> Square::getPiece()
+// --------------------------------------------------------------------------------------------------------------------
+bool Square::IsEmpty()
 {
-  return piece;
+  return mPiece == nullptr;
 }
 
-int Square::getRow() { return ROW; }
-int Square::getCol() { return COL; }
+// --------------------------------------------------------------------------------------------------------------------
+std::shared_ptr<Piece> Square::GetPiece()
+{
+  return mPiece;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+int Square::GetRow()
+{
+  return ROW;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+int Square::GetCol()
+{
+  return COL;
+}
+
+// --------------------------------------------------------------------------------------------------------------------

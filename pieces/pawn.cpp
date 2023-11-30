@@ -1,18 +1,19 @@
-#include "pawn.h"
-#include "../board.h"
-#include "../move.h"
-#include "../square.h"
-#include <iostream>
+#include "../Board.hpp"
+#include "../Move.hpp"
+#include "../Square.hpp"
+#include "Pawn.hpp"
 
+// --------------------------------------------------------------------------------------------------------------------
 Pawn::Pawn(PieceColour colour, PieceType name) : Piece(colour, name) {}
 
-vector<Move> Pawn::listPseudoLegalMoves(Board &board)
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Pawn::ListPseudoLegalMoves(Board *board)
 {
-  pseudo_legal_moves.clear();
-  int row = position->getRow();
-  int col = position->getCol();
+  mPseudoLegalMoves.clear();
+  int row = mPosition->GetRow();
+  int col = mPosition->GetCol();
   int i;
-  if (colour == PieceColour::kWhite)
+  if (mColour == PieceColour::kWhite)
   {
     i = -1;
   }
@@ -23,17 +24,17 @@ vector<Move> Pawn::listPseudoLegalMoves(Board &board)
 
   for (int j = 0; j < 2; j++) // normal move
   {
-    if (j == 0 || !has_moved)
+    if (j == 0 || !mHasMoved)
     {
       int nextRow = row + i * (j + 1);
-      if (!board.inRange(nextRow, col))
+      if (!board->InRange(nextRow, col))
       {
         continue;
       }
-      Move mv = Move(board.getSquare(row, col), board.getSquare(nextRow, col), board);
-      if (!isBlockedByPiece(mv)) // not blocked by a piece
+      Move mv = Move(board->GetSquare(row, col), board->GetSquare(nextRow, col), *board);
+      if (!IsBlockedByPiece(mv)) // not blocked by a piece
       {
-        pseudo_legal_moves.push_back(mv);
+        mPseudoLegalMoves.push_back(mv);
       }
       else
       {
@@ -50,16 +51,18 @@ vector<Move> Pawn::listPseudoLegalMoves(Board &board)
     }
     int nextRow = row + i;
     int nextCol = col + j;
-    if (!board.inRange(nextRow, nextCol))
+    if (!board->InRange(nextRow, nextCol))
     {
       continue;
     }
-    Move mv = Move(board.getSquare(row, col), board.getSquare(nextRow, nextCol), board);
-    if (isBlockedByPiece(mv)) // there is a piece to take
+    Move mv = Move(board->GetSquare(row, col), board->GetSquare(nextRow, nextCol), *board);
+    if (IsBlockedByPiece(mv)) // there is a piece to take
     {
-      pseudo_legal_moves.push_back(mv);
+      mPseudoLegalMoves.push_back(mv);
     }
   }
 
-  return pseudo_legal_moves;
+  return mPseudoLegalMoves;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

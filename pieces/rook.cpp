@@ -1,12 +1,16 @@
-#include "rook.h"
-#include "../board.h"
-#include "../move.h"
-#include "../square.h"
+#include "../Board.hpp"
+#include "../Move.hpp"
+#include "../Square.hpp"
+#include "Rook.hpp"
 
-Rook::Rook(PieceColour color, PieceType name) : Piece(color, name) {}
+// --------------------------------------------------------------------------------------------------------------------
+Rook::Rook(PieceColour colour, PieceType name) : Piece(colour, name) {}
 
-vector<Move> Rook::listPseudoLegalMoves(Board &board)
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Rook::ListPseudoLegalMoves(Board *board)
 {
-  pseudo_legal_moves.clear();
-  return pseudo_legal_moves;
+  mPseudoLegalMoves.clear();
+  return mPseudoLegalMoves;
 }
+
+// --------------------------------------------------------------------------------------------------------------------

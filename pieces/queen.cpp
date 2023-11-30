@@ -1,12 +1,16 @@
-#include "queen.h"
-#include "../move.h"
-#include "../square.h"
-#include "../board.h"
+#include "../Move.hpp"
+#include "../Square.hpp"
+#include "../Board.hpp"
+#include "Queen.hpp"
 
-Queen::Queen(PieceColour color, PieceType name) : Piece(color, name) {}
+// --------------------------------------------------------------------------------------------------------------------
+Queen::Queen(PieceColour colour, PieceType name) : Piece(colour, name) {}
 
-vector<Move> Queen::listPseudoLegalMoves(Board &board)
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Queen::ListPseudoLegalMoves(Board *board)
 {
-  pseudo_legal_moves.clear();
-  return pseudo_legal_moves;
+  mPseudoLegalMoves.clear();
+  return mPseudoLegalMoves;
 }
+
+// --------------------------------------------------------------------------------------------------------------------
