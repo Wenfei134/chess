@@ -1,7 +1,34 @@
 # Chess Game
-This is the final project for the C++ Workshops. The idea is to create a chess game (excluding the moves empassant, castling, and pawn promotion). 
+This is the final project for the C++ Workshops. The idea is to create a chess game.
 
-### Starter code
+## The Rules of Chess
+
+Can look up the rules online, so the rules are briefly outlined here. For the sake of time and complexity, we excluding the moves empassant, castling, and pawn promotion. 
+
+There are six types of pieces
+- **King** moves 1 step in any direction
+- **Queen** moves in any direction any distance, unless blocked by another piece
+- **Bishop** moves along the diagonals any distance, unless blocked by another piece
+- **Rook** moves vertically and horizontally any distance, unless blocked by another piece
+- **Knight** moves in an L shape, can "jump" over pieces
+- **Pawn** moves forward 1 step (or 2 on the first move), unless blocked by another piece
+
+A piece takes another piece by moving to the location occupied by that piece. If a piece is able to take another piece, then we say it places that piece under attack.
+- A piece can only take a peice of the opposite colour
+- The piece that is taken is permanently removed from the board
+
+The aim of the game is to place the opponent's King under attack such that the opponent cannot escape in one move. 
+This is known as *checkmate*. Simply placing the King under attack whether escape is possible or not is known as *check*.
+
+There are additional rules that govern piece movement:
+- Pawn is the only piece whose standard move is different from its taking move. Pawns take diagonally. 
+- If there are no legal moves but your King is not in check, then that is a *stalemate* and the game is a draw
+- If your King is currently in check, a legal move must make a move that takes it out of check 
+- If your King is not in check, a move is not legal if it puts your King in check 
+
+That is, it's not legal to make a move such that after the move is completed, your King is in check.
+
+## Starter code
 We've provided some starter code for dealing with the GUI and taking in user input, so when the game first runs 
 - The board initializes with the pieces of each side in their correct locations
 - These pieces are displayed on the UI
@@ -16,10 +43,10 @@ Additionally we handle user input
 - If a legal move is clicked, tell the game to move the piece. 
     - Currently the move function does nothing, so the input is handled correctly but it looks like nothing happens
 - If a different piece is clicked, the legal moves of that piece is shown 
-- If any other click happens, then the piece is deselected
+- If any other click happens and a piece was selected, then the piece is deselected
 - When a move happens, the turn switches to the opposite player
 
-### Not implemented
+## Not implemented
 - Get legal moves of each piece* (except Pawn which has been implemented)
 - Moving a piece when a move happens 
 - Undo a move (important for other functions)
