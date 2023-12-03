@@ -43,6 +43,7 @@ public:
   void SetHasMoved(bool has_moved);
   bool IsDead();
   virtual bool IsBlockedByPiece(Move &mv);
+  void SetPseudoLegalMoves(int row, int col, int range, std::vector<std::pair<int, int>> &directions, Board *board);
   virtual std::vector<Move> ListPseudoLegalMoves(Board *board) = 0;
   virtual ~Piece() = default;
 };

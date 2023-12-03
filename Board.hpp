@@ -23,6 +23,7 @@ private:
   std::shared_ptr<Piece> mKings[NUM_COLOURS];
   Move GetLastMove();
   void AddPiece(PieceColour colour, PieceType piece, Square *sq);
+  std::vector<Move> ListPseudoLegalMoves(PieceColour colour);
 
 public:
   Board();

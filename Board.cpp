@@ -162,8 +162,9 @@ The functions below are stub functions to implement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
 // --------------------------------------------------------------------------------------------------------------------
-std::vector<Move> Board::ListLegalMoves(PieceColour colour)
+std::vector<Move> Board::ListPseudoLegalMoves(PieceColour colour)
 {
   int index;
   if (colour == PieceColour::kWhite)
@@ -174,7 +175,7 @@ std::vector<Move> Board::ListLegalMoves(PieceColour colour)
   {
     index = 1;
   }
-  std::vector<Move> legalMoves;
+  std::vector<Move> pseudoLegalMoves;
   int len = mPieces[index].size();
   for (int i = 0; i < len; ++i)
   {
@@ -183,16 +184,28 @@ std::vector<Move> Board::ListLegalMoves(PieceColour colour)
     {
       continue;
     }
-    std::vector<Move> pseudo_legal_moves = piece->ListPseudoLegalMoves(this);
-    for (auto mv : pseudo_legal_moves)
-    {
-      DoMove(mv);
-      if (!IsChecked(mv.mMovingPiece->GetColour()))
-      {
-        legalMoves.push_back(mv);
-      }
-      UndoMove();
+    std::vector<Move> pseudoLegalMovesForPiece = piece->ListPseudoLegalMoves(this);
+    for(auto mv : pseudoLegalMovesForPiece){
+      pseudoLegalMoves.push_back(mv);
     }
+  }
+  return pseudoLegalMoves;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+std::vector<Move> Board::ListLegalMoves(PieceColour colour)
+{
+
+  auto pseudoLegalMoves = ListPseudoLegalMoves(colour);
+  std::vector<Move> legalMoves; 
+  for (auto mv : pseudoLegalMoves)
+  {
+    DoMove(mv);
+    if (!IsChecked(mv.mMovingPiece->GetColour()))
+    {
+      legalMoves.push_back(mv);
+    }
+    UndoMove();
   }
   return legalMoves;
 }
@@ -201,6 +214,9 @@ std::vector<Move> Board::ListLegalMoves(PieceColour colour)
 void Board::DoMove(Move &mv)
 {
   // implement
+
+  mv.mStart->Empty();
+  mv.mEnd->Place(mv.mMovingPiece);
 
   // update relative variables
   // if the moving piece hasn't moved
@@ -225,6 +241,12 @@ void Board::UndoMove()
 
   // implement
 
+  mv.mEnd->Empty();
+  mv.mStart->Place(mv.mMovingPiece);
+  if(mv.mIsAttack){
+    mv.mEnd->Place(mv.mKilledPiece);
+  }
+
   if (mv.mIsFirstMove)
   {
     mv.mMovingPiece->SetHasMoved(false);
@@ -234,29 +256,49 @@ void Board::UndoMove()
 // --------------------------------------------------------------------------------------------------------------------
 bool Board::IsChecked(PieceColour colour)
 {
-  Square *king_pos;
+  Square *kingPos;
   if (colour == PieceColour::kWhite)
   {
-    king_pos = mKings[0]->GetPosition();
+    kingPos = mKings[0]->GetPosition();
   }
   else
   {
-    king_pos = mKings[1]->GetPosition();
+    kingPos = mKings[1]->GetPosition();
   }
 
   // implement
+
+  PieceColour oppositeColour = PieceColour::kWhite;
+  if(colour == PieceColour::kWhite){
+    oppositeColour = PieceColour::kBlack;
+  }
+
+  auto moves = ListPseudoLegalMoves(oppositeColour);
+
+  for(auto mv: moves){
+    if(mv.mEnd == kingPos){
+      return true;
+    }
+  }
+
   return false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 bool Board::IsCheckmated(PieceColour colour)
 {
+  if(ListLegalMoves(colour).empty() && IsChecked(colour)){
+    return true;
+  }
   return false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 bool Board::IsStalemated(PieceColour colour)
 {
+  if(ListLegalMoves(colour).empty() && !IsChecked(colour)){
+    return true;
+  }
   return false;
 }
 
