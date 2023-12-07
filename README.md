@@ -77,6 +77,8 @@ If your system is not supported then you need to install SDL2 on your own.
 
 2. Update the makefile for your OS so that the `INCLUDE_PATHS` and `LIBRARY_PATHS` point to where you downloaded SDL2. (If you're on Linux good luck, we do not have a Linux Makefile).
 
+3. Also follow this set up guide to get the SDL_image extension: [https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php](https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php)
+
 ## Running the Game
 
 In the `chess` directory run the command 
